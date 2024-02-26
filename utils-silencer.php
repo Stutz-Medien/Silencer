@@ -7,7 +7,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:   Silencer
- * Plugin URI:    https://github.com/Stutz-Medien/andromeda-pro-extension.git
+ * Plugin URI:    https://github.com/Stutz-Medien/Silencer
  * Description:   Surpresses all comments on your WordPress site.
  * Version:       1.0.0
  * Author:        Stutz Medien

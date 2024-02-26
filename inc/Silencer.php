@@ -4,7 +4,7 @@
  *
  * @since   1.0
  * @package stutz-medien/utils-silencer
- * @link    https://github.com/Stutz-Medien/andromeda-pro-extension
+ * @link    https://github.com/Stutz-Medien/Silencer
  * @license https://www.gnu.org/licenses/gpl-3.0 GPL-3.0
  */
 

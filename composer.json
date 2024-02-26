@@ -1,6 +1,6 @@
 {
     "name": "utils/silencer",
-    "description": "Surpresses all comments on your WordPress site",
+    "description": "Surpresses all comments on your WordPress site.",
     "type": "wordpress-plugin",
     "license": "GPL-3.0-or-later",
     "authors": [
