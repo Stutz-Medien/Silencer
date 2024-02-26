@@ -5,7 +5,7 @@
  * @since   1.0
  * @package stutz-medien/utils-silencer
  * @link    https://github.com/Stutz-Medien/Silencer
- * @license https://www.gnu.org/licenses/gpl-3.0 GPL-3.0
+ * @license MIT
  */
 
 namespace Utils\Plugins;
@@ -25,8 +25,14 @@ class Silencer {
 		add_action( 'admin_init', [ $this, 'disable_comments_admin_menu_redirect' ] );
 		add_action( 'admin_init', [ $this, 'disable_comments_dashboard' ] );
 		add_action( 'wp_before_admin_bar_render', [ $this, 'disable_comments_admin_bar' ] );
+		add_action( 'init', [ $this, 'disable_comments_on_media_attachments' ] );
 	}
 
+	/**
+	 * Removes support for comments and trackbacks from post types
+	 *
+	 * @return void
+	 */
 	public function disable_comments_post_types_support() {
 		$post_types = get_post_types();
 
@@ -38,19 +44,39 @@ class Silencer {
 		}
 	}
 
+	/**
+	 * Close comments on the front-end
+	 *
+	 * @return bool
+	 */
 	public function disable_comments_status() {
 		return false;
 	}
 
+	/**
+	 * Hide existing comments
+	 *
+	 * @return array
+	 */
 	public function disable_comments_hide_existing_comments( $comments ) {
 		$comments = array();
 		return $comments;
 	}
 
+	/**
+	 * Removes comments page in menu
+	 *
+	 * @return void
+	 */
 	public function disable_comments_admin_menu() {
 		remove_menu_page( 'edit-comments.php' );
 	}
 
+	/**
+	 * Redirect any user trying to access comments page
+	 *
+	 * @return void
+	 */
 	public function disable_comments_admin_menu_redirect() {
 		global $pagenow;
 		if ( 'edit-comments.php' === $pagenow ) {
@@ -59,12 +85,42 @@ class Silencer {
 		}
 	}
 
+	/**
+	 * Removes comments metabox from dashboard
+	 *
+	 * @return void
+	 */
 	public function disable_comments_dashboard() {
 		remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
 	}
 
+	/**
+	 * Removes comments links from admin bar
+	 *
+	 * @return void
+	 */
 	public function disable_comments_admin_bar() {
 		global $wp_admin_bar;
 		$wp_admin_bar->remove_menu( 'comments' );
+	}
+
+	/**
+	 * Removes comments from all post types
+	 *
+	 * @return void
+	 */
+	public function disable_comments_on_media_attachments() {
+		add_filter(
+			'comments_open',
+			function ( $open, $post_id ) {
+				$post = get_post( $post_id );
+				if ( 'attachment' === $post->post_type ) {
+					return false;
+				}
+				return $open;
+			},
+			10,
+			2
+		);
 	}
 }
