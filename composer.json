@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Andromeda\\Plugins\\": "inc/"
+            "Utils\\Plugins\\": "inc/"
         }
     },
     "require-dev": {
