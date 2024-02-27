@@ -15,7 +15,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Silencer {
+	const COMMENT_PAGE = 'edit-comments.php';
 
+	/**
+	 * Register hooks
+	 *
+	 * @return void
+	 */
 	public function register() {
 		add_action( 'admin_init', [ $this, 'disable_comments_post_types_support' ] );
 		add_filter( 'comments_open', [ $this, 'disable_comments_status' ], 20, 2 );
@@ -69,7 +75,7 @@ class Silencer {
 	 * @return void
 	 */
 	public function disable_comments_admin_menu() {
-		remove_menu_page( 'edit-comments.php' );
+		remove_menu_page( self::COMMENT_PAGE );
 	}
 
 	/**
@@ -79,7 +85,7 @@ class Silencer {
 	 */
 	public function disable_comments_admin_menu_redirect() {
 		global $pagenow;
-		if ( 'edit-comments.php' === $pagenow ) {
+		if ( self::COMMENT_PAGE === $pagenow ) {
 			wp_safe_redirect( admin_url() );
 			exit;
 		}
@@ -105,7 +111,7 @@ class Silencer {
 	}
 
 	/**
-	 * Removes comments from all post types
+	 * Removes comments from media attachments
 	 *
 	 * @return void
 	 */
@@ -114,9 +120,14 @@ class Silencer {
 			'comments_open',
 			function ( $open, $post_id ) {
 				$post = get_post( $post_id );
+				if ( null === $post ) {
+					return false;
+				}
+
 				if ( 'attachment' === $post->post_type ) {
 					return false;
 				}
+
 				return $open;
 			},
 			10,

@@ -10,7 +10,7 @@ module.exports = {
         {
             files: '*.php',
             options: {
-                phpVersion: '8.2', // or the version you're using
+                phpVersion: '8.3', // or the version you're using
             },
         },
     ],
