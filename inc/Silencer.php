@@ -144,7 +144,11 @@ class Silencer {
 		);
 	}
 
-
+	/**
+	 * Hide comments options from dashboard
+	 *
+	 * @return void
+	 */
 	public function hide_comments_from_activity_widget() {
 		echo '
 		<style>
@@ -159,6 +163,11 @@ class Silencer {
 		';
 	}
 
+	/**
+	 * Register settings page
+	 *
+	 * @return void
+	 */
 	public function create_settings_page() {
 		add_submenu_page(
 			'options-general.php',
@@ -170,6 +179,11 @@ class Silencer {
 		);
 	}
 
+	/**
+	 * Register settings
+	 *
+	 * @return void
+	 */
 	public function register_settings() {
 		register_setting(
 			'silencer-settings-group',
@@ -182,6 +196,11 @@ class Silencer {
 		);
 	}
 
+	/**
+	 * Create settings page
+	 *
+	 * @return void
+	 */
 	public function silencer_options_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
