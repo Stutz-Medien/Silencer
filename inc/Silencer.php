@@ -29,6 +29,7 @@ class Silencer {
 		add_filter( 'comments_array', [ $this, 'disable_comments_hide_existing_comments' ], 10, 2 );
 		add_action( 'wp_before_admin_bar_render', [ $this, 'disable_comments_admin_bar' ] );
 		add_action( 'init', [ $this, 'disable_comments_on_media_attachments' ] );
+		add_action( 'admin_init', 'send_frame_options_header', 10, 0 );
 
 		$hide_settings = get_option( 'hide_settings' );
 
@@ -206,9 +207,19 @@ class Silencer {
 			return;
 		}
 
+		if ( isset( $_POST['hide_settings'] ) ) {
+			if ( ! check_admin_referer( 'update-options' ) ) {
+				wp_die( 'Nonce verification failed' );
+			}
+
+			$hide_settings = isset( $_POST['hide_settings'] ) ? 1 : 0;
+			update_option( 'hide_settings', $hide_settings );
+		}
+
 		echo '<div class="wrap">';
 		echo '<h1>' . esc_html( get_admin_page_title() ) . '</h1>';
 		echo '<form method="post" action="options.php">';
+		wp_nonce_field( 'update-options' );
 
 		settings_fields( 'silencer-settings-group' );
 
