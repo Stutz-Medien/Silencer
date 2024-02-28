@@ -207,6 +207,17 @@ class Silencer {
 			return;
 		}
 
+		$this->process_form();
+
+		$this->display_form();
+	}
+
+	/**
+	 * Process form
+	 *
+	 * @return void
+	 */
+	private function process_form() {
 		if ( isset( $_POST['hide_settings'] ) ) {
 			if ( ! check_admin_referer( 'update-options' ) ) {
 				wp_die( 'Nonce verification failed' );
@@ -215,7 +226,14 @@ class Silencer {
 			$hide_settings = isset( $_POST['hide_settings'] ) ? 1 : 0;
 			update_option( 'hide_settings', $hide_settings );
 		}
+	}
 
+	/**
+	 * Display form
+	 *
+	 * @return void
+	 */
+	private function display_form() {
 		echo '<div class="wrap">';
 		echo '<h1>' . esc_html( get_admin_page_title() ) . '</h1>';
 		echo '<form method="post" action="options.php">';
