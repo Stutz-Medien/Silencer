@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 (In Development)
+## 1.1.0 (2024-02-28)
 
 ### Added
 
