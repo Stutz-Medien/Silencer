@@ -42,6 +42,9 @@ class Silencer {
 
 		add_action( 'admin_menu', [ $this, 'create_settings_page' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
+
+		add_filter( 'allowed_block_types_all', [ $this, 'disallow_comment_block_types' ], 10, 2 );
+
 	}
 
 	/**
@@ -143,6 +146,55 @@ class Silencer {
 			10,
 			2
 		);
+	}
+
+	/**
+	 * Disallow comment block types
+	 *
+	 * @param array $allowed_block_types Array of allowed block types.
+	 * @param array $block_editor_context Block editor context.
+	 * @return array
+	 */
+	function disallow_comment_block_types( $allowed_block_types, $block_editor_context ) {
+
+		if  ( ! current_user_can( 'edit_theme_options' ) ) {
+
+		$disallow_blocks = [
+			'core/comments',
+			'core/comment-title',
+			'core/comment-template',
+			'core/comment-name',
+			'core/comment-date',
+			'core/comment-content',
+			'core/comment-reply-link',
+			'core/comment-edit-link',
+			'core/comments-pagination',
+			'core/comments-pagination-next',
+			'core/comments-pagination-previous',
+			'core/comments-pagination-numbers',
+			'core/post-comments-form',
+			'core/post-comments-count',
+			'core/post-comments-link',
+			'core/latest-comments'	
+		];
+
+		if ( ! is_array( $allowed_block_types ) || empty( $allowed_block_types ) ) {
+				$registered_blocks   = WP_Block_Type_Registry::get_instance()->get_all_registered();
+				$allowed_block_types = array_keys( $registered_blocks );
+		}
+	
+		$filtered_blocks = array();
+	
+		foreach ( $allowed_block_types as $block ) {
+	
+			if ( ! in_array( $block, $disallowed_blocks, true ) ) {
+				$filtered_blocks[] = $block;
+			}
+		}
+		return $filtered_blocks;
+		
+		}
+		
 	}
 
 	/**
