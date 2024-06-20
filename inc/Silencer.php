@@ -23,6 +23,8 @@ class Silencer {
 	 * @return void
 	 */
 	public function register() {
+		add_filter( 'allowed_block_types_all', [ $this, 'remove_comment_blocks' ], 10, 2 );
+
 		add_action( 'admin_init', [ $this, 'disable_comments_post_types_support' ] );
 		add_filter( 'comments_open', [ $this, 'disable_comments_status' ], 20, 2 );
 		add_filter( 'pings_open', [ $this, 'disable_comments_status' ], 20, 2 );
@@ -42,6 +44,45 @@ class Silencer {
 
 		add_action( 'admin_menu', [ $this, 'create_settings_page' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_styles' ] );
+	}
+
+	/**
+	 * Allowed block types callback
+	 *
+	 * @param bool|array              $allowed_block_types The allowed block types.
+	 * @param WP_Block_Editor_Context $editor_context The current block editor context.
+	 * @return array The filtered block types.
+	 */
+	public function remove_comment_blocks( $allowed_block_types, $editor_context ) {
+		if ( ! empty( $editor_context ) ) {
+			$disallowed_blocks = array(
+				'core/comments',
+				'core/comment-title',
+				'core/comment-template',
+				'core/comment-name',
+				'core/comment-date',
+				'core/comment-content',
+				'core/comment-reply-link',
+				'core/comment-edit-link',
+				'core/comments-pagination',
+				'core/comments-pagination-next',
+				'core/comments-pagination-previous',
+				'core/comments-pagination-numbers',
+				'core/post-comments-form',
+				'core/post-comments-count',
+				'core/post-comments-link',
+				'core/latest-comments',
+			);
+		}
+
+		$allowed_block_types = \WP_Block_Type_Registry::get_instance()->get_all_registered();
+
+		foreach ( $disallowed_blocks as $block ) {
+			unset( $allowed_block_types[ $block ] );
+		}
+
+		return array_keys( $allowed_block_types );
 	}
 
 	/**
@@ -164,6 +205,10 @@ class Silencer {
 		';
 	}
 
+	public function enqueue_admin_styles() {
+		wp_enqueue_style( 'silencer-style', plugin_dir_url( __DIR__ ) . 'assets/dist/css/style.css', [], '1.0.0' );
+	}
+
 	/**
 	 * Register settings page
 	 *
@@ -234,8 +279,11 @@ class Silencer {
 	 * @return void
 	 */
 	private function display_form() {
-		echo '<div class="wrap">';
-		echo '<h1>' . esc_html( get_admin_page_title() ) . '</h1>';
+		echo '<div class="wrap silencer">';
+		echo '<div class="maintenance-header">';
+		echo '<h1 class="main-heading">' . esc_html( get_admin_page_title() ) . '</h1>';
+		echo '<img class="main-logo" src="' . esc_url( plugins_url( 'assets/src/global/logo.svg', __DIR__ ) ) . '" alt="Maintenance" width="100" height="100">';
+		echo '</div>';
 		echo '<form method="post" action="options.php">';
 		wp_nonce_field( 'update-options' );
 
@@ -245,16 +293,17 @@ class Silencer {
 
 		$hide_settings = get_option( 'hide_settings' );
 
-		echo '<table class="form-table">';
-		echo '<tr valign="top">';
-		echo '<th scope="row">Hide Comment Options</th>';
-		echo '<td><input type="checkbox" id="hide_settings" name="hide_settings" value="1" ' . checked( 1, $hide_settings, false ) . ' /></td>';
-		echo '</tr>';
-		echo '</table>';
+		echo '<div class="silencer-inner">';
+		echo '<div class="silencer-field flex-field">';
+		echo '<h2 scope="row">Hide Comment Options</h2>';
+		echo '<span><input type="checkbox" id="hide_settings" name="hide_settings" value="1" ' . checked( 1, $hide_settings, false ) . ' /></span>';
+		echo '</div>';
+		echo '</div>';
 
 		submit_button( 'Save Settings' );
 
 		echo '</form>';
+		echo '<p>Coded with ❤️ by <a href="https://stutz-medien.ch" target="_blank">Stutz Medien</a></p>';
 		echo '</div>';
 	}
 }
