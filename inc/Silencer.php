@@ -23,6 +23,8 @@ class Silencer {
 	 * @return void
 	 */
 	public function register() {
+		add_filter( 'allowed_block_types_all', [ $this, 'remove_commtent_blocks' ], 1, 2 );
+
 		add_action( 'admin_init', [ $this, 'disable_comments_post_types_support' ] );
 		add_filter( 'comments_open', [ $this, 'disable_comments_status' ], 20, 2 );
 		add_filter( 'pings_open', [ $this, 'disable_comments_status' ], 20, 2 );
@@ -42,8 +44,6 @@ class Silencer {
 
 		add_action( 'admin_menu', [ $this, 'create_settings_page' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
-
-		add_filter( 'allowed_block_types', [ $this, 'remove_commtent_blocks' ], 10, 2 );
 	}
 
 	/**
