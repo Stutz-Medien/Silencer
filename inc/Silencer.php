@@ -23,7 +23,7 @@ class Silencer {
 	 * @return void
 	 */
 	public function register() {
-		add_filter( 'allowed_block_types_all', [ $this, 'remove_comment_blocks' ], 10, 2 );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_link_block' ] );
 
 		add_action( 'admin_init', [ $this, 'disable_comments_post_types_support' ] );
 		add_filter( 'comments_open', [ $this, 'disable_comments_status' ], 20, 2 );
@@ -48,41 +48,14 @@ class Silencer {
 	}
 
 	/**
-	 * Allowed block types callback
+	 * Enqueue block scripts
 	 *
-	 * @param bool|array              $allowed_block_types The allowed block types.
-	 * @param WP_Block_Editor_Context $editor_context The current block editor context.
-	 * @return array The filtered block types.
+	 * @return void
 	 */
-	public function remove_comment_blocks( $allowed_block_types, $editor_context ) {
-		if ( ! empty( $editor_context ) ) {
-			$disallowed_blocks = array(
-				'core/comments',
-				'core/comment-title',
-				'core/comment-template',
-				'core/comment-name',
-				'core/comment-date',
-				'core/comment-content',
-				'core/comment-reply-link',
-				'core/comment-edit-link',
-				'core/comments-pagination',
-				'core/comments-pagination-next',
-				'core/comments-pagination-previous',
-				'core/comments-pagination-numbers',
-				'core/post-comments-form',
-				'core/post-comments-count',
-				'core/post-comments-link',
-				'core/latest-comments',
-			);
-		}
+	public function enqueue_link_block() {
+		$base_script_url = plugin_dir_url( __DIR__ ) . 'assets/dist/js/';
 
-		$allowed_block_types = \WP_Block_Type_Registry::get_instance()->get_all_registered();
-
-		foreach ( $disallowed_blocks as $block ) {
-			unset( $allowed_block_types[ $block ] );
-		}
-
-		return array_keys( $allowed_block_types );
+		wp_enqueue_script( 'silencer-script', $base_script_url . 'app.js', [ 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ], SILENCER_VERSION, true );
 	}
 
 	/**
@@ -206,7 +179,7 @@ class Silencer {
 	}
 
 	public function enqueue_admin_styles() {
-		wp_enqueue_style( 'silencer-style', plugin_dir_url( __DIR__ ) . 'assets/dist/css/style.css', [], '1.0.0' );
+		wp_enqueue_style( 'silencer-style', plugin_dir_url( __DIR__ ) . 'assets/dist/css/style.css', [], SILENCER_VERSION );
 	}
 
 	/**
