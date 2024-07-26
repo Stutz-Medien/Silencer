@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1 (2024-07-26)
+
+### Fixed
+
+- Moved the block removal to `wp.blocks.unregisterBlockType` for better handling
+
 ## 1.2.0 (2024-06-20)
 
 ### Added
