@@ -33,9 +33,9 @@ class Silencer {
 		add_action( 'init', [ $this, 'disable_comments_on_media_attachments' ] );
 		add_action( 'admin_init', 'send_frame_options_header', 10, 0 );
 
-		$hide_settings = get_option( 'hide_settings' );
+		$hide_settings = rest_sanitize_boolean( get_option( 'hide_settings' ) );
 
-		if ( '1' === $hide_settings ) {
+		if ( true === $hide_settings ) {
 			add_action( 'admin_menu', [ $this, 'disable_comments_admin_menu' ] );
 			add_action( 'admin_init', [ $this, 'disable_comments_admin_menu_redirect' ] );
 			add_action( 'wp_dashboard_setup', [ $this, 'disable_comments_dashboard' ] );
@@ -208,9 +208,9 @@ class Silencer {
 			'silencer-settings-group',
 			'hide_settings',
 			array(
-				'type'              => 'string',
-				'sanitize_callback' => 'sanitize_text_field',
-				'default'           => 'none',
+				'type'              => 'boolean',
+				'sanitize_callback' => 'rest_sanitize_boolean',
+				'default'           => false,
 			)
 		);
 	}
@@ -241,7 +241,7 @@ class Silencer {
 				wp_die( 'Nonce verification failed' );
 			}
 
-			$hide_settings = isset( $_POST['hide_settings'] ) ? 1 : 0;
+			$hide_settings = isset( $_POST['hide_settings'] ) ? true : false;
 			update_option( 'hide_settings', $hide_settings );
 		}
 	}
@@ -264,12 +264,12 @@ class Silencer {
 
 		do_settings_sections( 'silencer-options' );
 
-		$hide_settings = get_option( 'hide_settings' );
+		$hide_settings = rest_sanitize_boolean( get_option( 'hide_settings' ) );
 
 		echo '<div class="silencer-inner">';
 		echo '<div class="silencer-field flex-field">';
 		echo '<h2 scope="row">Hide Comment Options</h2>';
-		echo '<span><input type="checkbox" id="hide_settings" name="hide_settings" value="1" ' . checked( 1, $hide_settings, false ) . ' /></span>';
+		echo '<span><input type="checkbox" id="hide_settings" name="hide_settings" value="1" ' . checked( true, $hide_settings, false ) . ' /></span>';
 		echo '</div>';
 		echo '</div>';
 
@@ -277,6 +277,7 @@ class Silencer {
 
 		echo '</form>';
 		echo '<p>Coded with ❤️ by <a href="https://stutz-medien.ch" target="_blank">Stutz Medien</a></p>';
+		echo '<small>v' . esc_html( SILENCER_VERSION ) . '</small>';
 		echo '</div>';
 	}
 }
