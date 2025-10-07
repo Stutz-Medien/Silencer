@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Switch from strings to true/false for the `hide_settings` option
+- Display the version number in the settings
 
 ### Security
 
