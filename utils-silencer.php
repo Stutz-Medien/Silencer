@@ -9,10 +9,9 @@
  * Plugin Name:   Silencer
  * Plugin URI:    https://github.com/Stutz-Medien/Silencer
  * Description:   Surpresses all comments on your WordPress site.
- * Version:       1.2.2
+ * Version:       1.2.3
  * Author:        Stutz Medien
  * Author URI:    https://stutz-medien.ch/
- * Text Domain:   acf
  * Domain Path:   /lang
  */
 
@@ -20,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SILENCER_VERSION', '1.2.2' );
+define( 'SILENCER_VERSION', '1.2.3' );
 
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) :
 	require_once __DIR__ . '/vendor/autoload.php';

@@ -5,7 +5,7 @@
  * @since   1.0
  * @package stutz-medien/utils-silencer
  * @link    https://github.com/Stutz-Medien/Silencer
- * @license MIT
+ * @license GPL-2.0-or-later
  */
 
 namespace Utils\Plugins;
